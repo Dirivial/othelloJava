@@ -372,6 +372,17 @@ public class Board {
         return false;
     }
 
+    public boolean containsColor(Color color) {
+        for (ArrayList<Tile> arrList: this.gameBoard) {
+            for (Tile tile: arrList) {
+                if (tile.getColor().equals(color)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public Tile getTile(Position position) {
         return gameBoard.get(position.getX()).get(position.getY());
     }
