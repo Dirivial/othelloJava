@@ -61,37 +61,28 @@ public class GameWindow implements ActionListener {
         JMenuItem itemRandomAI = new JMenuItem("AI - Random");
         popupmenu.add(itemHuman); popupmenu.add(itemRandomAI);
 
-        buttonHuman.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.setTitle("Othello vs Human!");
-                frame.dispose();
-                optF.setVisible(true);
-                f.setVisible(true);
-                gameMode = "HUMAN";
-            }
+        buttonHuman.addActionListener(e -> {
+            f.setTitle("Othello vs Human!");
+            frame.dispose();
+            optF.setVisible(true);
+            f.setVisible(true);
+            gameMode = "HUMAN";
         });
 
-        buttonRandomAI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.setTitle("Othello vs RandomAI");
-                frame.dispose();
-                optF.setVisible(true);
-                f.setVisible(true);
-                gameMode = "AIRANDOM";
-            }
+        buttonRandomAI.addActionListener(e -> {
+            f.setTitle("Othello vs RandomAI");
+            frame.dispose();
+            optF.setVisible(true);
+            f.setVisible(true);
+            gameMode = "AIRANDOM";
         });
 
-        buttonMinMaxAI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.setTitle("Othello vs MinMaxAI");
-                frame.dispose();
-                optF.setVisible(true);
-                f.setVisible(true);
-                gameMode = "AIMINMAX";
-            }
+        buttonMinMaxAI.addActionListener(e -> {
+            f.setTitle("Othello vs MinMaxAI");
+            frame.dispose();
+            optF.setVisible(true);
+            f.setVisible(true);
+            gameMode = "AIMINMAX";
         });
 
         frame.add(buttonHuman);
@@ -131,34 +122,26 @@ public class GameWindow implements ActionListener {
 
     private void aiRandomTurn() {
         updateGameBoard();
-        if (this.tileBoard.listOfAllEnabledPositions().size() == 0) {
-            endTurn();
-
-        } else {
-
+        if (this.tileBoard.listOfAllEnabledPositions().size() != 0) {
             Position pos;
             computer = new OthelloRandomAI(this.tileBoard, Color.RED);
             pos = computer.getMove();
             this.tileBoard.makeMoveFromPosition(pos, Color.RED);
             this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
-            endTurn();
         }
+        endTurn();
     }
 
     private void aiMinMaxTurn() {
         updateGameBoard();
-        if (this.tileBoard.listOfAllEnabledPositions().size() == 0) {
-            endTurn();
-
-        } else {
-
+        if (this.tileBoard.listOfAllEnabledPositions().size() != 0) {
             Position pos;
             computer = new OthelloMinMaxAI(this.tileBoard, Color.RED);
             pos = computer.getMove();
             this.tileBoard.makeMoveFromPosition(pos, Color.RED);
             this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
-            endTurn();
         }
+        endTurn();
     }
 
     private void endTurn() {
@@ -288,21 +271,6 @@ public class GameWindow implements ActionListener {
             }
         }
         endTurn();
-    }
-
-    private void printTheEnabledOnes() {
-        System.out.println("---------------------------------");
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
-                if (this.gameBoard.get(i).get(j).isEnabled()) {
-                    System.out.println("ButtonBoard, x: " + i + ", y: " + j);
-                }
-                if (this.tileBoard.getTile(new Position(i, j)).getEnabled()) {
-                    System.out.println("TileBoard, x: " + i + ", y: " + j);
-                }
-            }
-        }
-        System.out.println("---------------------------------");
     }
 
     private void disableButtons() {
