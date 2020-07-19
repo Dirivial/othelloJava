@@ -120,7 +120,7 @@ public class GameWindow implements ActionListener {
 
             Position pos;
             computer = new OthelloRandomAI(this.tileBoard, Color.RED);
-            pos = computer.evaluatePositions(this.tileBoard.listOfAllEnabledPositions());
+            pos = computer.getMove();
             this.tileBoard.makeMoveFromPosition(pos, Color.RED);
             this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
             endTurn();

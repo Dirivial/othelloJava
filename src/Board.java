@@ -24,6 +24,16 @@ public class Board {
         }
     }
 
+    public Board(Board copy) {
+        this.gameBoard = copy.gameBoard;
+        for (int i = 0; i < cols; i++) {
+            copy.gameBoard.clear();
+            for (int j = 0; j < rows; j++) {
+                copy.gameBoard.get(i).add(j, new Tile(this.gameBoard.get(i).get(j)));
+            }
+        }
+    }
+
     /**
      * Updates @this.gameBoard from a different @gameBoard.
      * @param gameBoard board to update tiles from

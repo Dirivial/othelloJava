@@ -3,5 +3,5 @@ import java.util.ArrayList;
 
 public interface OthelloAI {
     void makeMove(Position position);
-    Position evaluatePositions(ArrayList<Position> positions);
+    Position getMove();
 }

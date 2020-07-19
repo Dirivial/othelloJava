@@ -10,8 +10,9 @@ public class OthelloRandomAI extends OthelloSuperAI {
     }
 
     @Override
-    public Position evaluatePositions(ArrayList<Position> positions) {
+    public Position getMove() {
         Random rand = new Random();
-        return positions.get(rand.nextInt(positions.size()));
+        ArrayList<Position> list = this.board.listOfAllEnabledPositions();
+        return list.get(rand.nextInt(list.size()));
     }
 }

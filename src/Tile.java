@@ -5,10 +5,11 @@ public class Tile {
     private Color color = Color.DARK_GRAY;
     private boolean enabled = false;
 
-    public Tile(Position position) {
-        this.color = Color.DARK_GRAY;
-        this.position = position;
+    public Tile(Tile copy) {
+        this.color = copy.color;
+        this.position = copy.position;
     }
+
     public Tile(Position position, Color color) {
         this.color = color;
         this.position = position;
@@ -16,6 +17,10 @@ public class Tile {
 
     public Color getColor() {
         return this.color;
+    }
+
+    public Tile tileCopy() {
+        return new Tile(this.position, this.color);
     }
 
     public void setColour(Color colour) {
