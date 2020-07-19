@@ -24,15 +24,31 @@ public class Board {
         }
     }
 
+    /*
     public Board(Board copy) {
         this.gameBoard = copy.gameBoard;
-        for (int i = 0; i < cols; i++) {
+        for (int i = 0; i < this.cols; i++) {
             copy.gameBoard.clear();
-            for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < this.rows; j++) {
                 copy.gameBoard.get(i).add(j, new Tile(this.gameBoard.get(i).get(j)));
             }
         }
     }
+     */
+
+    public Board boardCopy() {
+        Board copy = new Board(this.cols, this.rows);
+
+        for (int i = 0; i < this.cols; i++) {
+            for (int j = 0; j < this.rows; j++) {
+                Position pos = new Position(i, j);
+                copy.getTile(pos).setColour(this.getTile(pos).getColor());
+            }
+        }
+        return copy;
+    }
+
+
 
     /**
      * Updates @this.gameBoard from a different @gameBoard.
@@ -139,9 +155,9 @@ public class Board {
 
     /**
      * calculates if a tile is a possible move, if paint == true the method finds the tiles to paint and paints them.
-     * @param position
-     * @param playerColor
-     * @param paint
+     * @param position original position.
+     * @param playerColor color of the current player.
+     * @param paint true if method should calculate tiles to paint and paint them.
      */
     private void calculateTile(Position position, Color playerColor, boolean paint) {
         ArrayList<String> possibleDirections = possibleDirections(position);
@@ -298,19 +314,19 @@ public class Board {
 
     /**
      * paints given tiles to a color.
-     * @param tilesToPaint
-     * @param color
+     * @param tilesToPaint array of tiles to paint to a color.
+     * @param color color to use.
      */
     private void paintTiles(ArrayList<Tile> tilesToPaint, Color color) {
-        for (int i = 0; i < tilesToPaint.size(); i++) {
-            tilesToPaint.get(i).setColour(color);
+        for (Tile tile : tilesToPaint) {
+            tile.setColour(color);
         }
     }
 
     /**
      * Creates an array with two elements, arr[0] contains number
      * of blue markers, arr[1] contains number of red markers.
-     * @return
+     * @return an array according to description.
      */
     
     public ArrayList<Integer> calculateMarkers() {
@@ -333,8 +349,8 @@ public class Board {
 
     /**
      * Looks for interesting directions e.g. a direction that worthy of checking out.
-     * @param position
-     * @return
+     * @param position a position to investigate
+     * @return Array of possible directions
      */
     public ArrayList<String> possibleDirections(Position position) {
         ArrayList<String> directions = new ArrayList<>();
@@ -369,7 +385,7 @@ public class Board {
 
     /**
      * returns true if there are any playable moves
-     * @return
+     * @return boolean
      */
     public boolean playerHasMoves() {
         for (ArrayList<Tile> arrList: this.gameBoard) {
@@ -382,15 +398,26 @@ public class Board {
         return false;
     }
 
-    public boolean containsColor(Color color) {
+    public boolean gameIsOver() {
+        boolean[] boolArray = {true, true, true};
         for (ArrayList<Tile> arrList: this.gameBoard) {
             for (Tile tile: arrList) {
-                if (tile.getColor().equals(color)) {
-                    return true;
+                if (tile.getColor().equals(Color.DARK_GRAY)) {
+                    boolArray[0] = false;
+                }
+                if (tile.getColor().equals(Color.BLUE)) {
+                    boolArray[1] = false;
+                }
+                if (tile.getColor().equals(Color.RED)) {
+                    boolArray[2] = false;
                 }
             }
         }
-        return false;
+        if (boolArray[0] || boolArray[1] || boolArray[2]) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Tile getTile(Position position) {

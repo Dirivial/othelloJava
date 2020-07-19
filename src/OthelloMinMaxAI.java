@@ -1,9 +1,9 @@
 import java.awt.*;
 import java.util.ArrayList;
 
-public class OthelloMinMaxAI extends OthelloSuperAI {
+//TODO: Improve heuristic method, (amount of markers placed, give value to more tiles)
 
-    private Integer depth = 3;
+public class OthelloMinMaxAI extends OthelloSuperAI {
 
     public OthelloMinMaxAI(Board gameBoard, Color color) {
         this.board = gameBoard;
@@ -20,33 +20,36 @@ public class OthelloMinMaxAI extends OthelloSuperAI {
 
         ArrayList<Position> listOfMoves = this.board.listOfAllEnabledPositions();
 
-        Integer maximumScore = -1000;
+        int maximumScore = -1000;
         Position bestPosition = listOfMoves.get(0);
 
-        for (int i = 0; i < listOfMoves.size(); i++) {
-            Board copyOfBoard = new Board(board);
-            copyOfBoard.makeMoveFromPosition(listOfMoves.get(i), this.color);
-            Integer score = minMaxAlgorithm(copyOfBoard, this.depth, false);
+        for (Position listOfMove : listOfMoves) {
+            Board copyOfBoard = this.board.boardCopy();
+            copyOfBoard.makeMoveFromPosition(listOfMove, this.color);
+            Integer depth = 5;
+            Integer score = minMaxAlgorithm(copyOfBoard, depth, false);
             if (maximumScore < score) {
+                System.out.println("Previous high: " + maximumScore + ", New high: " + score);
+                System.out.println("Position" + listOfMove);
                 maximumScore = score;
-                bestPosition = listOfMoves.get(i);
+                bestPosition = listOfMove;
             }
         }
         return bestPosition;
     }
 
-    private Integer heuristicMethod(Board board, Color playerColor) {
+    private Integer heuristicMethod(Board board) {
 
-        Integer heuristicValue = 0;
+        int heuristicValue = 0;
 
         Position[] bestPositions = {new Position(0,0), new Position(7, 0),
                 new Position(0,7), new Position(7,7)};
 
         for (Position pos: bestPositions) {
             if (board.getTile(pos).getColor() == this.color) {
-                heuristicValue += 100;
+                heuristicValue += 5;
             } else {
-                heuristicValue -= 100;
+                heuristicValue -= 5;
             }
         }
 
@@ -66,9 +69,9 @@ public class OthelloMinMaxAI extends OthelloSuperAI {
 
         for (Position position: badPositions) {
             if (board.getTile(position).getColor() == this.color) {
-                heuristicValue -= 20;
+                heuristicValue -= 10;
             } else {
-                heuristicValue += 20;
+                heuristicValue += 10;
             }
         }
 
@@ -76,43 +79,38 @@ public class OthelloMinMaxAI extends OthelloSuperAI {
     }
 
     private Integer minMaxAlgorithm(Board node, Integer depth, boolean maximizingPlayer) {
-        if (depth == 0 || !node.containsColor(Color.DARK_GRAY)) {
-            if (maximizingPlayer) {
-                return heuristicMethod(node, this.color);
-            } else {
-                return heuristicMethod(node, this.otherColor);
-            }
+        if (depth == 0 || node.gameIsOver()) {
+            return heuristicMethod(node);
         }
 
-        Integer value;
+        int value;
         if (maximizingPlayer) {
             value = -1000;
             node.calculatePossibleMoves(this.color);
             ArrayList<Position> listOfMoves = node.listOfAllEnabledPositions();
 
-            for (int i = 0; i < listOfMoves.size(); i++) {
-                Board copyOfNode = new Board(node);
-                copyOfNode.makeMoveFromPosition(listOfMoves.get(i), this.color);
-                Integer score = minMaxAlgorithm(copyOfNode, depth-1, false);
+            for (Position listOfMove : listOfMoves) {
+                Board copyOfNode = node.boardCopy();
+                copyOfNode.makeMoveFromPosition(listOfMove, this.color);
+                Integer score = minMaxAlgorithm(copyOfNode, depth - 1, false);
                 if (value < score) {
                     value = score;
                 }
             }
-            return value;
         } else {
             value = 1000;
             node.calculatePossibleMoves(this.otherColor);
             ArrayList<Position> listOfMoves = node.listOfAllEnabledPositions();
 
-            for (int i = 0; i < listOfMoves.size(); i++) {
-                Board copyOfNode = new Board(node);
-                copyOfNode.makeMoveFromPosition(listOfMoves.get(i), this.otherColor);
-                Integer score = minMaxAlgorithm(copyOfNode, depth-1, true);
+            for (Position listOfMove : listOfMoves) {
+                Board copyOfNode = node.boardCopy();
+                copyOfNode.makeMoveFromPosition(listOfMove, this.otherColor);
+                Integer score = minMaxAlgorithm(copyOfNode, depth - 1, true);
                 if (value > score) {
                     value = score;
                 }
             }
-            return value;
         }
+        return value;
     }
 }

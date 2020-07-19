@@ -50,9 +50,11 @@ public class GameWindow implements ActionListener {
 
         JButton buttonHuman = new JButton("Human");
         JButton buttonRandomAI = new JButton("AI - Random");
+        JButton buttonMinMaxAI = new JButton("AI - MinMax");
 
         buttonHuman.setBounds(0,0,100,100);
         buttonRandomAI.setBounds(100,0,100,100);
+        buttonRandomAI.setBounds(200,0,100,100);
 
         JPopupMenu popupmenu = new JPopupMenu("Choose");
         JMenuItem itemHuman = new JMenuItem("Human");
@@ -81,8 +83,21 @@ public class GameWindow implements ActionListener {
             }
         });
 
+        buttonMinMaxAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                f.setTitle("Othello vs MinMaxAI");
+                frame.dispose();
+                optF.setVisible(true);
+                f.setVisible(true);
+                gameMode = "AIMINMAX";
+            }
+        });
+
         frame.add(buttonHuman);
         frame.add(buttonRandomAI);
+        frame.add(buttonMinMaxAI);
+
         frame.add(popupmenu);
         frame.setSize(400, 400);
         frame.setLayout(new GridLayout(2,2));
@@ -96,6 +111,9 @@ public class GameWindow implements ActionListener {
             switch (gameMode) {
                 case "AIRANDOM":
                     aiRandomTurn();
+                    break;
+                case "AIMINMAX":
+                    aiMinMaxTurn();
                     break;
                 default:
                     humanTurn();
@@ -120,6 +138,22 @@ public class GameWindow implements ActionListener {
 
             Position pos;
             computer = new OthelloRandomAI(this.tileBoard, Color.RED);
+            pos = computer.getMove();
+            this.tileBoard.makeMoveFromPosition(pos, Color.RED);
+            this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
+            endTurn();
+        }
+    }
+
+    private void aiMinMaxTurn() {
+        updateGameBoard();
+        if (this.tileBoard.listOfAllEnabledPositions().size() == 0) {
+            endTurn();
+
+        } else {
+
+            Position pos;
+            computer = new OthelloMinMaxAI(this.tileBoard, Color.RED);
             pos = computer.getMove();
             this.tileBoard.makeMoveFromPosition(pos, Color.RED);
             this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
