@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Board {
@@ -69,7 +68,7 @@ public class Board {
 
     /**
      * Updates the enabled status on all buttons from the tiles
-     * @param gameBoard
+     * @param gameBoard board to update
      */
     public void updateEnableStatus(ArrayList<ArrayList<JButton>> gameBoard) {
         for (int i = 0; i < gameBoard.size(); i++) {
@@ -85,7 +84,7 @@ public class Board {
 
     /**
      * Updates the colors on a board to the ones on @this.gameBoard
-     * @param gameBoard
+     * @param gameBoard board to update
      */
     public void updateColorsOnGameBoard(ArrayList<ArrayList<JButton>> gameBoard) {
         for (int i = 0; i < gameBoard.size(); i++) {
