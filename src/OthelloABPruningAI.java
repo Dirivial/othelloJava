@@ -24,11 +24,9 @@ public class OthelloABPruningAI extends OthelloSuperAI {
         for (Position listOfMove : listOfMoves) {
             Board copyOfBoard = this.board.boardCopy();
             copyOfBoard.makeMoveFromPosition(listOfMove, this.color);
-            Integer depth = 5;
+            Integer depth = 7;
             Integer score = alphaBetaPruning(copyOfBoard, depth, -1000, 1000, false);
             if (maximumScore < score) {
-                System.out.println("Previous high: " + maximumScore + ", New high: " + score);
-                System.out.println("Position" + listOfMove);
                 maximumScore = score;
                 bestPosition = listOfMove;
             }

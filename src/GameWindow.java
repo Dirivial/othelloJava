@@ -103,6 +103,24 @@ public class GameWindow implements ActionListener {
         frame.setVisible(true);
     }
 
+    private void endMenu() {
+        updateOptionals();
+        JFrame frame = new JFrame("Game ended");
+        frame.setLayout(new GridLayout(2, 2));
+
+        JLabel label = new JLabel();
+
+        if ((Integer.parseInt(this.numOfRed.getText()) > Integer.parseInt(this.numOfBlue.getText()))) {
+            label.setText("Computer won!");
+        } else {
+            label.setText("You won!");
+        }
+
+        frame.add(label);
+        frame.setSize(400, 400);
+        frame.setVisible(true);
+    }
+
     private void nextPlayer() {
         if (currentPlayer.equals(Color.BLUE)) {
             humanTurn();
@@ -172,8 +190,9 @@ public class GameWindow implements ActionListener {
         switchPlayer();
         updateOptionals();
         if (gameIsOver()) {
+
+            endMenu();
             resetBoard();
-            updateOptionals();
         }
         nextPlayer();
     }
