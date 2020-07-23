@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 //TODO: Add end screen.
+//TODO: Make turns depend on the user, instead of automatic. After human turn -> CPU, if CPU can't move/after CPU move -> human.
 
 public class GameWindow implements ActionListener {
     JFrame f;
@@ -12,6 +13,7 @@ public class GameWindow implements ActionListener {
     ArrayList<ArrayList<JButton>> gameBoard = new ArrayList<>();
     Board tileBoard;
     Color currentPlayer = Color.BLUE;
+    boolean lastWasAMove = true;
 
     JButton currentPlayerButton = new JButton();
     JButton exitButton = new JButton();
@@ -110,11 +112,23 @@ public class GameWindow implements ActionListener {
 
         JLabel label = new JLabel();
 
-        if ((Integer.parseInt(this.numOfRed.getText()) > Integer.parseInt(this.numOfBlue.getText()))) {
+        ArrayList<Integer> numOfEachColor = this.tileBoard.calculateMarkers();
+
+        if (numOfEachColor.get(0) < numOfEachColor.get(1)) {
             label.setText("Computer won!");
         } else {
             label.setText("You won!");
         }
+
+        JButton button = new JButton("RESET");
+
+        button.addActionListener(e -> {
+            f.setTitle("Othello vs Human!");
+            frame.dispose();
+            optF.setVisible(true);
+            f.setVisible(true);
+            gameMode = "HUMAN";
+        });
 
         frame.add(label);
         frame.setSize(400, 400);
@@ -122,6 +136,7 @@ public class GameWindow implements ActionListener {
     }
 
     private void nextPlayer() {
+
         if (currentPlayer.equals(Color.BLUE)) {
             humanTurn();
         } else {
@@ -145,6 +160,9 @@ public class GameWindow implements ActionListener {
     private void humanTurn() {
         updateGameBoard();
         if (this.tileBoard.listOfAllEnabledPositions().size() == 0) {
+            if (!this.lastWasAMove) {
+                endMenu();
+            }
             endTurn();
         }
     }
@@ -157,6 +175,9 @@ public class GameWindow implements ActionListener {
             pos = computer.getMove();
             this.tileBoard.makeMoveFromPosition(pos, Color.RED);
             this.tileBoard.updateColorsOnGameBoard(this.gameBoard);
+
+        } else {
+            this.lastWasAMove = false;
         }
         endTurn();
     }
@@ -190,7 +211,6 @@ public class GameWindow implements ActionListener {
         switchPlayer();
         updateOptionals();
         if (gameIsOver()) {
-
             endMenu();
             resetBoard();
         }

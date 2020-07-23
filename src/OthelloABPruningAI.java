@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+/ TODO: Fix heuristic function to actually make the AI try to win. Make "bad" tiles less bad the longer into the game it is.
+ */
 public class OthelloABPruningAI extends OthelloSuperAI {
 
     public OthelloABPruningAI(Board gameBoard, Color color) {
@@ -18,17 +21,17 @@ public class OthelloABPruningAI extends OthelloSuperAI {
 
         ArrayList<Position> listOfMoves = this.board.listOfAllEnabledPositions();
 
-        int maximumScore = -1000;
+        int maximumScore = -10000;
         Position bestPosition = listOfMoves.get(0);
 
-        for (Position listOfMove : listOfMoves) {
+        for (Position move : listOfMoves) {
             Board copyOfBoard = this.board.boardCopy();
-            copyOfBoard.makeMoveFromPosition(listOfMove, this.color);
-            Integer depth = 7;
+            copyOfBoard.makeMoveFromPosition(move, this.color);
+            Integer depth = 6;
             Integer score = alphaBetaPruning(copyOfBoard, depth, -1000, 1000, false);
             if (maximumScore < score) {
                 maximumScore = score;
-                bestPosition = listOfMove;
+                bestPosition = move;
             }
         }
         return bestPosition;
@@ -43,9 +46,51 @@ public class OthelloABPruningAI extends OthelloSuperAI {
 
         for (Position pos: bestPositions) {
             if (board.getTile(pos).getColor() == this.color) {
-                heuristicValue += 5;
+                heuristicValue += 1000;
             } else {
+                heuristicValue -= 1000;
+            }
+        }
+
+        ArrayList<Position> goodPositions = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 2; j < 6; j++) {
+                goodPositions.add(new Position(0, j));
+                goodPositions.add(new Position(7, j));
+                goodPositions.add(new Position(j, 0));
+                goodPositions.add(new Position(j, 7));
+                goodPositions.add(new Position(2, j));
+                goodPositions.add(new Position(5, j));
+                goodPositions.add(new Position(j, 2));
+                goodPositions.add(new Position(j, 5));
+            }
+        }
+
+        for (Position pos: goodPositions) {
+            if (board.getTile(pos).getColor() == this.color) {
+                heuristicValue += 10;
+            } else {
+                heuristicValue -= 10;
+            }
+        }
+
+        ArrayList<Position> mehPositions = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 2; j < 6; j++) {
+                mehPositions.add(new Position(1, j));
+                mehPositions.add(new Position(6, j));
+                mehPositions.add(new Position(j, 1));
+                mehPositions.add(new Position(j, 6));
+            }
+        }
+
+        for (Position pos: mehPositions) {
+            if (board.getTile(pos).getColor() == this.color) {
                 heuristicValue -= 5;
+            } else {
+                heuristicValue += 5;
             }
         }
 
@@ -65,14 +110,15 @@ public class OthelloABPruningAI extends OthelloSuperAI {
 
         for (Position position: badPositions) {
             if (board.getTile(position).getColor() == this.color) {
-                heuristicValue -= 10;
+                heuristicValue -= 100;
             } else {
-                heuristicValue += 10;
+                heuristicValue += 100;
             }
         }
 
         return heuristicValue;
     }
+
 
     private Integer alphaBetaPruning(Board node, Integer depth, int alpha, int beta, boolean maximizingPlayer) {
         if (depth == 0 || node.gameIsOver()) {
